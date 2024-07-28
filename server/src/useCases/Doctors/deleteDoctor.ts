@@ -1,6 +1,5 @@
-import AppError from 'errors/AppError';
-import {  getRepository } from 'typeorm';
-
+import AppError from '../../errors/AppError';
+import { AppDataSource } from '../../dataSource/DataSource'; // ajuste o caminho conforme necessário
 import Doctor from '../../entities/Doctor';
 import Specialty from '../../schemas/Specialty';
 
@@ -9,8 +8,8 @@ interface IRequest {
 }
 
 export async function deleteDoctor({ id }: IRequest): Promise<void> {
-  const doctorRepository = getRepository(Doctor);
-  const specialtyRepository = getRepository(Specialty);
+  const doctorRepository = AppDataSource.getRepository(Doctor);
+  const specialtyRepository = AppDataSource.getRepository(Specialty);
 
   try {
     // Deletar o médico pelo ID

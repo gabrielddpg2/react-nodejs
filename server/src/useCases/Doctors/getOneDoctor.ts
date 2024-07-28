@@ -1,6 +1,5 @@
 import AppError from '../../errors/AppError';
-import { getRepository } from 'typeorm';
-
+import { AppDataSource } from '../../dataSource/DataSource'; // ajuste o caminho conforme necessário
 import Doctor from '../../entities/Doctor';
 import Specialty from '../../schemas/Specialty';
 
@@ -14,25 +13,25 @@ interface IResponse {
 }
 
 export async function getOneDoctor({ id }: IRequest): Promise<IResponse> {
-  const doctorRepository = getRepository(Doctor);
-  const specialtyRepository = getRepository(Specialty, 'mongo');
+  const doctorRepository = AppDataSource.getRepository(Doctor);
+  const specialtyRepository = AppDataSource.getRepository(Specialty);
 
-  const doctor = await doctorRepository.findOne(id);
+  const doctor = await doctorRepository.findOne({ where: { id } });
 
   if (!doctor) {
     throw new AppError('Doctor not found');
   }
 
-  const doctorSpecialties = await specialtyRepository.findOne({
+  const doctorSpecialties = await specialtyRepository.find({
     where: { doctor_id: id },
   });
 
-  if (!doctorSpecialties) {
-    throw new AppError("doctor's specialties not found");
+  if (!doctorSpecialties.length) {
+    throw new AppError("Doctor's specialties not found");
   }
 
   return {
     doctor,
-    specialties: doctorSpecialties.specialties,
+    specialties: doctorSpecialties.map(specialty => specialty.name),
   };
 }

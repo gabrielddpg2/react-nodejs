@@ -1,9 +1,9 @@
 import AppError from '../../errors/AppError';
-import {  getRepository } from 'typeorm';
+import { AppDataSource } from '../../dataSource/DataSource'; // ajuste o caminho conforme necessário
 import { parseSpecialties } from '../../utils/parseSpecialties';
 
 import Doctor from '../../entities/Doctor';
-import Specialty from '../../schemas/Specialty';
+import Specialty from '../../schemas/Specialty'; // ajuste o caminho conforme necessário
 
 interface IRequest {
   name: string;
@@ -44,7 +44,8 @@ export async function register({
   city,
   specialties,
 }: IRequest): Promise<IResponse> {
-  const doctorRepository = getRepository(Doctor);
+  const doctorRepository = AppDataSource.getRepository(Doctor);
+  const specialtyRepository = AppDataSource.getRepository(Specialty);
 
   const doctorAlreadyExists = await doctorRepository.findOne({
     where: { crm },
@@ -60,18 +61,18 @@ export async function register({
     throw new AppError(`The doctor must have at least 2 specialties`);
   }
 
-  const registeredSpecialties = [''];
-  parsedSpecialties.map((specialty) => {
+  const registeredSpecialties: string[] = [];
+  parsedSpecialties.forEach((specialty) => {
     if (registeredSpecialties.includes(specialty.toUpperCase())) {
-      throw new AppError(`specialties cannot be repeated`);
+      throw new AppError(`Specialties cannot be repeated`);
     } else {
-      registeredSpecialties.push(specialty);
+      registeredSpecialties.push(specialty.toUpperCase());
     }
   });
 
-  parsedSpecialties.map((specialty) => {
+  parsedSpecialties.forEach((specialty) => {
     if (!specialtiesAvailable.includes(specialty.toUpperCase())) {
-      throw new AppError(`Doctor's specialty: '${specialty}' not is available`);
+      throw new AppError(`Doctor's specialty: '${specialty}' is not available`);
     }
   });
 
@@ -86,18 +87,18 @@ export async function register({
     city,
   });
 
-  const specialtyRepository = getRepository(Specialty, 'mongo');
-
-  const doctorSpecialties = specialtyRepository.create({
-    specialties: parsedSpecialties,
-    doctor_id: doctor.id,
-  });
+  const doctorSpecialties = parsedSpecialties.map((specialty) =>
+    specialtyRepository.create({
+      name: specialty,
+      doctor,
+    })
+  );
 
   await doctorRepository.save(doctor);
   await specialtyRepository.save(doctorSpecialties);
 
   return {
     doctor: doctor,
-    specialties: doctorSpecialties.specialties,
+    specialties: doctorSpecialties.map(s => s.name),
   };
 }

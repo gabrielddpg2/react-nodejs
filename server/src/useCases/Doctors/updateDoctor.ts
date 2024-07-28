@@ -1,9 +1,9 @@
 import AppError from '../../errors/AppError';
-import { getRepository } from 'typeorm';
+import { AppDataSource } from '../../dataSource/DataSource'; // ajuste o caminho conforme necessário
 import { parseSpecialties } from '../../utils/parseSpecialties';
 
 import Doctor from '../../entities/Doctor';
-import Specialty from '../../schemas/Specialty';
+import Specialty from '../../schemas/Specialty'; // ajuste o caminho conforme necessário
 
 interface IRequest {
   id: string;
@@ -35,10 +35,10 @@ export async function updateDoctor({
   city,
   specialties,
 }: IRequest): Promise<IResponse> {
-  const doctorRepository = getRepository(Doctor);
-  const specialtyRepository = getRepository(Specialty, 'mongo');
+  const doctorRepository = AppDataSource.getRepository(Doctor);
+  const specialtyRepository = AppDataSource.getRepository(Specialty);
 
-  const doctor = await doctorRepository.findOne(id);
+  const doctor = await doctorRepository.findOne({ where: { id } });
 
   if (!doctor) {
     throw new AppError('Doctor not found');
@@ -61,29 +61,36 @@ export async function updateDoctor({
     throw new AppError(`The doctor must have at least 2 specialties`);
   }
 
-  const registeredSpecialties = [''];
-  parsedSpecialties.map((specialty) => {
+  const registeredSpecialties: string[] = [];
+  parsedSpecialties.forEach((specialty) => {
     if (registeredSpecialties.includes(specialty.toUpperCase())) {
-      throw new AppError(`specialties cannot be repeated`);
+      throw new AppError(`Specialties cannot be repeated`);
     } else {
-      registeredSpecialties.push(specialty);
+      registeredSpecialties.push(specialty.toUpperCase());
     }
   });
 
-  const doctorsSpecialties = await specialtyRepository.findOne({
-    where: { doctor_id: doctor.id },
+  const doctorSpecialties = await specialtyRepository.find({
+    where: { doctor: { id: doctor.id } },
   });
 
-  if (!doctorsSpecialties) {
-    throw new AppError("doctor's specialties not found");
+  if (!doctorSpecialties.length) {
+    throw new AppError("Doctor's specialties not found");
   }
 
-  doctorsSpecialties.specialties = parsedSpecialties;
+  await specialtyRepository.remove(doctorSpecialties);
 
-  await specialtyRepository.save(doctorsSpecialties);
+  const newDoctorSpecialties = parsedSpecialties.map((specialty) =>
+    specialtyRepository.create({
+      name: specialty,
+      doctor,
+    })
+  );
+
+  await specialtyRepository.save(newDoctorSpecialties);
 
   return {
     doctor,
-    specialties: parsedSpecialties,
+    specialties: newDoctorSpecialties.map(s => s.name),
   };
 }
