@@ -86,7 +86,7 @@ export async function register({
     city,
   });
 
-  const specialtyRepository = getRepository(Specialty, 'mongo');
+  const specialtyRepository = getRepository(Specialty);
 
   const doctorSpecialties = specialtyRepository.create({
     specialties: parsedSpecialties,

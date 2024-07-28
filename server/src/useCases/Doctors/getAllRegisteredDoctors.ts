@@ -14,7 +14,7 @@ export async function getAllRegisteredDoctors(): Promise<IResponse[]> {
 
   const doctors = await doctorRepository.find();
 
-  const specialtyRepository = getRepository(Specialty, 'mongo');
+  const specialtyRepository = getRepository(Specialty);
 
   const doctorsSpecialties = await specialtyRepository.find();
 

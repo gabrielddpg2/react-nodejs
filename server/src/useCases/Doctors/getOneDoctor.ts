@@ -15,7 +15,7 @@ interface IResponse {
 
 export async function getOneDoctor({ id }: IRequest): Promise<IResponse> {
   const doctorRepository = getRepository(Doctor);
-  const specialtyRepository = getRepository(Specialty, 'mongo');
+  const specialtyRepository = getRepository(Specialty);
 
   const doctor = await doctorRepository.findOne(id);
 

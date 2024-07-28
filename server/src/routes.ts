@@ -11,4 +11,8 @@ routes.get('/doctors/:id', doctorsController.find);
 routes.put('/doctors/:id', doctorsController.update);
 routes.delete('/doctors/:id', doctorsController.delete);
 
+routes.get("/teste", (req, res) => {
+    return res.json("testando 2222");
+});
+
 export default routes;
