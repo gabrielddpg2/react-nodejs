@@ -120,10 +120,10 @@ const Register: React.FC = () => {
 
       const valid = await schema.isValid(data);
 
-      if (!valid) {
+      /* if (!valid) {
         toast.error('Existem campo(s) inválidos, verificar novamente...');
         return;
-      }
+      } */
 
       await api.post('doctors', {
         ...data,
