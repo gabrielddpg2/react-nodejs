@@ -1,5 +1,5 @@
 import AppError from '../../errors/AppError';
-import { getMongoRepository, getRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { parseSpecialties } from '../../utils/parseSpecialties';
 
 import Doctor from '../../entities/Doctor';
@@ -36,7 +36,7 @@ export async function updateDoctor({
   specialties,
 }: IRequest): Promise<IResponse> {
   const doctorRepository = getRepository(Doctor);
-  const specialtyRepository = getMongoRepository(Specialty, 'mongo');
+  const specialtyRepository = getRepository(Specialty, 'mongo');
 
   const doctor = await doctorRepository.findOne(id);
 

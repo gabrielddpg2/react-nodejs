@@ -13,14 +13,5 @@
     "cli": {
       "migrationsDir": "./src/database/migrations"
     }
-  },
-  {
-    "name": "mongo",
-    "type": "mongodb",
-    "host": "mongo-api",
-    "port": 27017,
-    "database": "desenv",
-    "useUnifiedTopology": true,
-    "entities": ["./src/schemas/*.ts"]
   }
 ]

@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity('doctors')
 class Doctor {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ type: 'varchar', length: 120 })

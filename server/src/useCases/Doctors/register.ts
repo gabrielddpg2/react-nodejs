@@ -1,5 +1,5 @@
 import AppError from '../../errors/AppError';
-import { getMongoRepository, getRepository } from 'typeorm';
+import {  getRepository } from 'typeorm';
 import { parseSpecialties } from '../../utils/parseSpecialties';
 
 import Doctor from '../../entities/Doctor';
@@ -86,7 +86,7 @@ export async function register({
     city,
   });
 
-  const specialtyRepository = getMongoRepository(Specialty, 'mongo');
+  const specialtyRepository = getRepository(Specialty, 'mongo');
 
   const doctorSpecialties = specialtyRepository.create({
     specialties: parsedSpecialties,
