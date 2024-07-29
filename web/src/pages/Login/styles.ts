@@ -70,7 +70,8 @@ export const Button = styled.button`
   border: none;
   border-radius: 4px;
   background-color: #ff8c00;
-  color: #fff;
+  color: black;
+  font-weight: bold; 
   font-size: 16px;
   cursor: pointer;
   width: 100%;

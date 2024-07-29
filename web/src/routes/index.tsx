@@ -5,6 +5,7 @@ import Home from '../pages/Home';
 import Register from '../pages/Register';
 import Edit from '../pages/Edit';
 import Login from '../pages/Login';
+import Pontos from '../pages/Pontos';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -12,6 +13,7 @@ const Routes: React.FC = () => (
     <Route path='/register' component={Register} />
     <Route path='/edit/:id' component={Edit} />
     <Route path='/login' component={Login} />
+    <Route path='/pontos' component={Pontos} />
   </Switch>
 );
 
