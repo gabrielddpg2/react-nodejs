@@ -28,15 +28,14 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
 
             if (lastRegister) {
                 const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000; // em minutos
-                const hoursWorked = minutesWorked / 60; // convertendo minutos para horas
                 await pointsHistoryRepository.save({
                     user_code,
                     date: now,
-                    hours: Math.floor(hoursWorked), // horas
+                    hours: Math.floor(minutesWorked / 60), // horas
                     minutes: Math.floor(minutesWorked % 60) // minutos
                 });
 
-                dailyPoints.hours_today += hoursWorked;
+                dailyPoints.hours_today += minutesWorked;
                 dailyPoints.working = false;
             } else {
                 throw new Error('No previous register found for today while trying to stop working.');

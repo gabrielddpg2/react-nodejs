@@ -26,7 +26,17 @@ export class PointController {
 
             const dailyPoints = await registerPoint({ user_code });
 
-            return response.json(dailyPoints);
+            // Calculando e formatando hours_today
+            const totalMinutes = dailyPoints.hours_today;
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = Math.floor(totalMinutes % 60);
+            const formattedHoursToday = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+            return response.json({
+                user_code: dailyPoints.user_code,
+                working: dailyPoints.working,
+                hours_today: formattedHoursToday
+            });
         } catch (error) {
             console.error('Error registering point:', error);
             return response.status(500).json({ status: 'error', message: 'Internal server error' });
