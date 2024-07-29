@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import api from '../../services/api';  // Importando a instância configurada
+import api from '../../services/api';  
 import { Container, InputContainer, Button } from './styles';
 
 const Login: React.FC = () => {

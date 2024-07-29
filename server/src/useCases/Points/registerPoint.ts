@@ -4,7 +4,7 @@ import PointsHistory from '../../entities/PointsHistory';
 
 interface IRequest {
     user_code: string;
-    timestamp?: string; // Adicionado para aceitar um timestamp opcional
+    timestamp?: string; 
 }
 
 export async function registerPoint({ user_code, timestamp }: IRequest): Promise<DailyPoints> {
@@ -19,13 +19,12 @@ export async function registerPoint({ user_code, timestamp }: IRequest): Promise
     }
 
     const now = timestamp ? new Date(timestamp) : new Date();
-    const today = now.toISOString().split('T')[0]; // Formatando a data no formato YYYY-MM-DD
+    const today = now.toISOString().split('T')[0]; 
 
     try {
         if (dailyPoints.working && dailyPoints.start_time) {
-            const minutesWorked = (now.getTime() - new Date(dailyPoints.start_time).getTime()) / 60000; // em minutos
+            const minutesWorked = (now.getTime() - new Date(dailyPoints.start_time).getTime()) / 60000; 
 
-            // Atualizar o histórico de pontos para a data atual
             let pointsHistory = await pointsHistoryRepository.findOne({
                 where: { user_code, date: today },
             });
@@ -39,10 +38,9 @@ export async function registerPoint({ user_code, timestamp }: IRequest): Promise
                 });
             }
 
-            pointsHistory.hours += Math.floor(minutesWorked / 60); // horas
-            pointsHistory.minutes += Math.floor(minutesWorked % 60); // minutos
+            pointsHistory.hours += Math.floor(minutesWorked / 60); 
+            pointsHistory.minutes += Math.floor(minutesWorked % 60); 
 
-            // Ajustar horas e minutos se os minutos excederem 60
             if (pointsHistory.minutes >= 60) {
                 pointsHistory.hours += Math.floor(pointsHistory.minutes / 60);
                 pointsHistory.minutes = pointsHistory.minutes % 60;
@@ -50,13 +48,12 @@ export async function registerPoint({ user_code, timestamp }: IRequest): Promise
 
             await pointsHistoryRepository.save(pointsHistory);
 
-            dailyPoints.hours_today = (pointsHistory.hours * 60) + pointsHistory.minutes; // Atualizar horas_today
+            dailyPoints.hours_today = (pointsHistory.hours * 60) + pointsHistory.minutes; 
             dailyPoints.working = false;
             dailyPoints.start_time = null;
         } else {
             dailyPoints.start_time = now;
 
-            // Verificar se já existe um registro de pontos para a data atual
             let pointsHistory = await pointsHistoryRepository.findOne({
                 where: { user_code, date: today },
             });
