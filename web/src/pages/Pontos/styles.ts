@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-width: 100%;
+  width: 100%;
   background: #151F2B;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,8 @@ export const Header = styled.div`
   .headerMain {
     display: flex;
     justify-content: space-between;
-
+    width: 100%;
+    
     h1 {
       margin: 0;
       font-family: Montserrat;
@@ -40,6 +41,12 @@ export const Header = styled.div`
       color:#FFFFFF;
     }
 
+    .userInfo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; 
+    }
+
     .userCode {
       font-family: Montserrat;
       font-size: 14px;
@@ -47,8 +54,18 @@ export const Header = styled.div`
       line-height: 17.07px;
       color:#FFFFFF;
     }
+
+    .userName {
+      font-family: Montserrat;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 14.63px;
+      text-align: center;
+      color:#CFCFCF;
+    }
   }
 `;
+
 
 export const WorkTime = styled.div`
   display: flex;
@@ -80,10 +97,10 @@ export const Button = styled.button`
   color: #1E2733;
   font-weight: bold;
   font-family: Montserrat;
-font-size: 16px;
-font-weight: 700;
-line-height: 19.5px;
-text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19.5px;
+  text-align: center;
 
   cursor: pointer;
   width: 100%;
@@ -101,7 +118,7 @@ export const History = styled.div`
   width: 100%;
 
   h3 {
-    margin: 0 0 20px 0;
+    margin: 20px 0 10px 0;
     font-size: 18px;
     font-weight: 400;
     color:#FFFFFF;
@@ -120,5 +137,27 @@ export const History = styled.div`
     span {
       font-size: 16px;
     }
+  }
+
+  .dateHistory {
+    color: #FFFFFF;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14.63px;
+    text-align: center;
+
+  }
+
+
+  .timeHistory {
+    color: #FFFFFF;
+    font-weight: bold;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14.63px;
+    text-align: center;
+
   }
 `;

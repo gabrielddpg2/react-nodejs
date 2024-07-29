@@ -59,7 +59,7 @@ const Pontos: React.FC = () => {
             <h1>Relógio de ponto</h1>
             <div>
               <div className='userCode'>#{userCode}</div>
-              <div>Usuário</div>
+              <div className='userName'>Usuário</div>
             </div>
           </div>
 
@@ -75,8 +75,8 @@ const Pontos: React.FC = () => {
           <h3>Dias anteriores</h3>
           {history.map(item => (
             <div key={item.id}>
-              <span>{item.date}</span>
-              <span>{item.hours}h {item.minutes}m</span>
+              <span className='dateHistory'>{item.date}</span>
+              <span className='timeHistory'>{item.hours}h {item.minutes}m</span>
             </div>
           ))}
         </History>
