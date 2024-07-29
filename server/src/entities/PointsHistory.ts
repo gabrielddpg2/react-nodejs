@@ -18,6 +18,9 @@ class PointsHistory {
 
     @Column()
     hours: number;
+
+    @Column()
+    minutes: number; 
 }
 
 export default PointsHistory;

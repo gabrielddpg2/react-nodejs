@@ -26,18 +26,17 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
         });
 
         if (lastRegister) {
-            const hoursWorked = Math.floor((now.getTime() - new Date(lastRegister.date).getTime()) / 3600000);
-
+            const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000; // em minutos
             await pointsHistoryRepository.save({
                 user_code,
                 date: now,
-                hours: hoursWorked,
+                hours: Math.floor(minutesWorked / 60), // horas
+                minutes: Math.floor(minutesWorked % 60) // minutos
             });
 
-            dailyPoints.hours_today += hoursWorked;
+            dailyPoints.hours_today += minutesWorked;
             dailyPoints.working = false;
         } else {
-            // Tratamento no caso de não encontrar lastRegister (opcional)
             throw new Error('No previous register found for today while trying to stop working.');
         }
     } else {
@@ -45,6 +44,7 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
             user_code,
             date: now,
             hours: 0,
+            minutes: 0
         });
 
         dailyPoints.working = true;

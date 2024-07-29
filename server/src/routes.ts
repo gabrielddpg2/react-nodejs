@@ -16,10 +16,11 @@ routes.delete('/doctors/:id', doctorsController.delete);
 routes.post('/users', pointController.createUser);
 routes.post('/points', pointController.registerPoint);
 routes.get('/points/history/:user_code', pointController.getPointsHistory);
-
+routes.get('/points/today/:user_code', pointController.getTodayHours);
+routes.get('/users', pointController.getAllUsers);
 
 routes.get("/teste", (req, res) => {
-    return res.json("testando servidor 222");
+    return res.json("testando servidor");
 });
 
 export default routes;
