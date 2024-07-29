@@ -19,38 +19,44 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
 
     const now = new Date();
 
-    if (dailyPoints.working) {
-        const lastRegister = await pointsHistoryRepository.findOne({
-            where: { user_code, date: now.toDateString() },
-            order: { date: 'DESC' },
-        });
+    try {
+        if (dailyPoints.working) {
+            const lastRegister = await pointsHistoryRepository.findOne({
+                where: { user_code },
+                order: { date: 'DESC' },
+            });
 
-        if (lastRegister) {
-            const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000; // em minutos
+            if (lastRegister) {
+                const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000; // em minutos
+                const hoursWorked = minutesWorked / 60; // convertendo minutos para horas
+                await pointsHistoryRepository.save({
+                    user_code,
+                    date: now,
+                    hours: Math.floor(hoursWorked), // horas
+                    minutes: Math.floor(minutesWorked % 60) // minutos
+                });
+
+                dailyPoints.hours_today += hoursWorked;
+                dailyPoints.working = false;
+            } else {
+                throw new Error('No previous register found for today while trying to stop working.');
+            }
+        } else {
             await pointsHistoryRepository.save({
                 user_code,
                 date: now,
-                hours: Math.floor(minutesWorked / 60), // horas
-                minutes: Math.floor(minutesWorked % 60) // minutos
+                hours: 0,
+                minutes: 0
             });
 
-            dailyPoints.hours_today += minutesWorked;
-            dailyPoints.working = false;
-        } else {
-            throw new Error('No previous register found for today while trying to stop working.');
+            dailyPoints.working = true;
         }
-    } else {
-        await pointsHistoryRepository.save({
-            user_code,
-            date: now,
-            hours: 0,
-            minutes: 0
-        });
 
-        dailyPoints.working = true;
+        await dailyPointsRepository.save(dailyPoints);
+    } catch (error) {
+        console.error('Error registering point:', error);
+        throw new Error('Internal server error');
     }
-
-    await dailyPointsRepository.save(dailyPoints);
 
     return dailyPoints;
 }

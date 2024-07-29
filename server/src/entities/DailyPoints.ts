@@ -13,7 +13,7 @@ class DailyPoints {
     @Column({ default: false })
     working: boolean;
 
-    @Column({ default: 0 })
+    @Column('float', { default: 0 }) // Alterado para 'float'
     hours_today: number;
 }
 
