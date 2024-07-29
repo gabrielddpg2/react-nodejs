@@ -79,6 +79,7 @@ export class PointController {
             }
 
             let hoursWorkedToday = dailyPoints.hours_today;
+            const isWorking = dailyPoints.working;
 
             if (dailyPoints.working && dailyPoints.start_time) {
                 const now = new Date();
@@ -91,7 +92,8 @@ export class PointController {
 
             return response.json({
                 hours: String(hours).padStart(2, '0'),
-                minutes: String(minutes).padStart(2, '0')
+                minutes: String(minutes).padStart(2, '0'),
+                trabalhando: isWorking
             });
         } catch (error) {
             console.error('Error getting today hours:', error);
