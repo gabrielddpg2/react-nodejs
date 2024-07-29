@@ -77,17 +77,10 @@ export class PointController {
 
             let hoursWorkedToday = dailyPoints.hours_today;
 
-            if (dailyPoints.working) {
-                const lastRegister = await pointsHistoryRepository.findOne({
-                    where: { user_code },
-                    order: { date: 'DESC' },
-                });
-
-                if (lastRegister) {
-                    const now = new Date();
-                    const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000;
-                    hoursWorkedToday += minutesWorked;
-                }
+            if (dailyPoints.working && dailyPoints.start_time) {
+                const now = new Date();
+                const minutesWorked = (now.getTime() - new Date(dailyPoints.start_time).getTime()) / 60000;
+                hoursWorkedToday += minutesWorked;
             }
 
             const hours = Math.floor(hoursWorkedToday / 60);

@@ -15,6 +15,9 @@ class DailyPoints {
 
     @Column('float', { default: 0 }) // Alterado para 'float'
     hours_today: number;
+
+    @Column('timestamp', { nullable: true }) // Adicionado para armazenar o horário de início
+    start_time: Date | null;
 }
 
 export default DailyPoints;

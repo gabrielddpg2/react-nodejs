@@ -20,27 +20,20 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
     const now = new Date();
 
     try {
-        if (dailyPoints.working) {
-            const lastRegister = await pointsHistoryRepository.findOne({
-                where: { user_code },
-                order: { date: 'DESC' },
+        if (dailyPoints.working && dailyPoints.start_time) {
+            const minutesWorked = (now.getTime() - new Date(dailyPoints.start_time).getTime()) / 60000; // em minutos
+            await pointsHistoryRepository.save({
+                user_code,
+                date: now,
+                hours: Math.floor(minutesWorked / 60), // horas
+                minutes: Math.floor(minutesWorked % 60) // minutos
             });
 
-            if (lastRegister) {
-                const minutesWorked = (now.getTime() - new Date(lastRegister.date).getTime()) / 60000; // em minutos
-                await pointsHistoryRepository.save({
-                    user_code,
-                    date: now,
-                    hours: Math.floor(minutesWorked / 60), // horas
-                    minutes: Math.floor(minutesWorked % 60) // minutos
-                });
-
-                dailyPoints.hours_today += minutesWorked;
-                dailyPoints.working = false;
-            } else {
-                throw new Error('No previous register found for today while trying to stop working.');
-            }
+            dailyPoints.hours_today += minutesWorked;
+            dailyPoints.working = false;
+            dailyPoints.start_time = null;
         } else {
+            dailyPoints.start_time = now;
             await pointsHistoryRepository.save({
                 user_code,
                 date: now,
