@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import api from '../../services/api';
 import { HourContainer, Container, Header, WorkTime, Button, History } from './styles';
 
@@ -17,8 +18,18 @@ interface IHistoryItem {
 
 const Pontos: React.FC = () => {
   const [workTime, setWorkTime] = useState<IWorkTime | null>(null);
-  const [history, setHistory] = useState<IHistoryItem[]>([]);
+  const [historyItems, setHistoryItems] = useState<IHistoryItem[]>([]);
   const userCode = localStorage.getItem('session');
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!userCode) {
+      history.push('/');
+    } else {
+      fetchWorkTime();
+      fetchHistory();
+    }
+  }, [userCode, history]);
 
   const fetchWorkTime = async () => {
     if (userCode) {
@@ -30,14 +41,9 @@ const Pontos: React.FC = () => {
   const fetchHistory = async () => {
     if (userCode) {
       const response = await api.get(`/points/history/${userCode}`);
-      setHistory(response.data);
+      setHistoryItems(response.data);
     }
   };
-
-  useEffect(() => {
-    fetchWorkTime();
-    fetchHistory();
-  }, [userCode]);
 
   const handleButtonClick = async () => {
     if (userCode) {
@@ -62,18 +68,17 @@ const Pontos: React.FC = () => {
               <div className='userName'>Usuário</div>
             </div>
           </div>
-
         </Header>
         <WorkTime>
           <h2>{workTime ? `${workTime.hours}h ${workTime.minutes}m` : '0h 0m'}</h2>
           <p>Horas de hoje</p>
         </WorkTime>
         <Button onClick={handleButtonClick}>
-          {workTime?.trabalhando ? 'Hora de entrada' : 'Hora de saída'}
+          {workTime?.trabalhando ? 'Hora de saída' : 'Hora de entrada'}
         </Button>
         <History>
           <h3>Dias anteriores</h3>
-          {history.map(item => (
+          {historyItems.map(item => (
             <div key={item.id}>
               <span className='dateHistory'>{item.date}</span>
               <span className='timeHistory'>{item.hours}h {item.minutes}m</span>
