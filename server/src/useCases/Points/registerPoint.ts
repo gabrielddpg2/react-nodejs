@@ -4,9 +4,10 @@ import PointsHistory from '../../entities/PointsHistory';
 
 interface IRequest {
     user_code: string;
+    timestamp?: string; // Adicionado para aceitar um timestamp opcional
 }
 
-export async function registerPoint({ user_code }: IRequest): Promise<DailyPoints> {
+export async function registerPoint({ user_code, timestamp }: IRequest): Promise<DailyPoints> {
     const dailyPointsRepository = getRepository(DailyPoints);
     const pointsHistoryRepository = getRepository(PointsHistory);
 
@@ -17,7 +18,7 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
         await dailyPointsRepository.save(dailyPoints);
     }
 
-    const now = new Date();
+    const now = timestamp ? new Date(timestamp) : new Date();
     const today = now.toISOString().split('T')[0]; // Formatando a data no formato YYYY-MM-DD
 
     try {

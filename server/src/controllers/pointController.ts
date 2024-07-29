@@ -22,9 +22,9 @@ export class PointController {
 
     async registerPoint(request: Request, response: Response): Promise<Response> {
         try {
-            const { user_code } = request.body;
+            const { user_code, timestamp } = request.body; // Adicionado timestamp
 
-            const dailyPoints = await registerPoint({ user_code });
+            const dailyPoints = await registerPoint({ user_code, timestamp });
 
             // Calculando e formatando hours_today
             const totalMinutes = dailyPoints.hours_today;
