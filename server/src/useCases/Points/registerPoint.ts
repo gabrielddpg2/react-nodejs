@@ -18,16 +18,30 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
     }
 
     const now = new Date();
+    const today = now.toISOString().split('T')[0]; // Formatando a data no formato YYYY-MM-DD
 
     try {
         if (dailyPoints.working && dailyPoints.start_time) {
             const minutesWorked = (now.getTime() - new Date(dailyPoints.start_time).getTime()) / 60000; // em minutos
-            await pointsHistoryRepository.save({
-                user_code,
-                date: now,
-                hours: Math.floor(minutesWorked / 60), // horas
-                minutes: Math.floor(minutesWorked % 60) // minutos
+
+            // Atualizar o histórico de pontos para a data atual
+            let pointsHistory = await pointsHistoryRepository.findOne({
+                where: { user_code, date: today },
             });
+
+            if (!pointsHistory) {
+                pointsHistory = pointsHistoryRepository.create({
+                    user_code,
+                    date: today,
+                    hours: 0,
+                    minutes: 0
+                });
+            }
+
+            pointsHistory.hours += Math.floor(minutesWorked / 60); // horas
+            pointsHistory.minutes += Math.floor(minutesWorked % 60); // minutos
+
+            await pointsHistoryRepository.save(pointsHistory);
 
             dailyPoints.hours_today += minutesWorked;
             dailyPoints.working = false;
@@ -36,7 +50,7 @@ export async function registerPoint({ user_code }: IRequest): Promise<DailyPoint
             dailyPoints.start_time = now;
             await pointsHistoryRepository.save({
                 user_code,
-                date: now,
+                date: today,
                 hours: 0,
                 minutes: 0
             });

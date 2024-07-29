@@ -48,7 +48,10 @@ export class PointController {
             const { user_code } = request.params;
             const pointsHistoryRepository = getRepository(PointsHistory);
 
-            const history = await pointsHistoryRepository.find({ where: { user_code } });
+            const history = await pointsHistoryRepository.find({
+                where: { user_code },
+                order: { date: 'DESC' }, // Ordenando da data mais recente para a mais antiga
+            });
 
             const formattedHistory = history.map(entry => ({
                 ...entry,
