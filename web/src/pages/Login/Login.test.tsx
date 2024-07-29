@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import Login from './index';
 import api from '../../services/api';
 
+// Mock do serviço API
 jest.mock('../../services/api');
 
 describe('Login Page', () => {
@@ -37,8 +38,8 @@ describe('Login Page', () => {
     fireEvent.change(screen.getByPlaceholderText(''), { target: { value: 'validUser' } });
     fireEvent.click(screen.getByRole('button', { name: /Confirmar/i }));
     
-    await screen.findByRole('button', { name: /Confirmar/i }); 
-    
-    expect(history.location.pathname).toBe('/pontos');
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/pontos');
+    });
   });
 });
