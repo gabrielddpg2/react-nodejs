@@ -32,7 +32,7 @@ export const InputContainer = styled.div`
   h1 {
     width:100%;
     text-align: left;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
 
   .divInput {
@@ -52,7 +52,9 @@ export const InputContainer = styled.div`
   }
 
   input {
-    padding: 10px;
+    padding: 25px 10px 10px 10px;
+    color: #FFFFFF;
+    font-weight: bold; 
     margin-bottom: 20px;
     border: none;
     border-radius: 4px;

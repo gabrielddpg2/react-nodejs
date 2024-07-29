@@ -12,6 +12,12 @@ const Login: React.FC = () => {
     setUserCode(event.target.value);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await api.get(`/users/exists/${userCode}`);
@@ -37,6 +43,7 @@ const Login: React.FC = () => {
             placeholder=""
             value={userCode}
             onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
           />
         </div>
         <Button onClick={handleSubmit}>Confirmar</Button>
