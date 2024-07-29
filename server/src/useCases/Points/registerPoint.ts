@@ -42,19 +42,33 @@ export async function registerPoint({ user_code, timestamp }: IRequest): Promise
             pointsHistory.hours += Math.floor(minutesWorked / 60); // horas
             pointsHistory.minutes += Math.floor(minutesWorked % 60); // minutos
 
+            // Ajustar horas e minutos se os minutos excederem 60
+            if (pointsHistory.minutes >= 60) {
+                pointsHistory.hours += Math.floor(pointsHistory.minutes / 60);
+                pointsHistory.minutes = pointsHistory.minutes % 60;
+            }
+
             await pointsHistoryRepository.save(pointsHistory);
 
-            dailyPoints.hours_today += minutesWorked;
+            dailyPoints.hours_today = (pointsHistory.hours * 60) + pointsHistory.minutes; // Atualizar horas_today
             dailyPoints.working = false;
             dailyPoints.start_time = null;
         } else {
             dailyPoints.start_time = now;
-            await pointsHistoryRepository.save({
-                user_code,
-                date: today,
-                hours: 0,
-                minutes: 0
+
+            // Verificar se já existe um registro de pontos para a data atual
+            let pointsHistory = await pointsHistoryRepository.findOne({
+                where: { user_code, date: today },
             });
+
+            if (!pointsHistory) {
+                await pointsHistoryRepository.save({
+                    user_code,
+                    date: today,
+                    hours: 0,
+                    minutes: 0
+                });
+            }
 
             dailyPoints.working = true;
         }
