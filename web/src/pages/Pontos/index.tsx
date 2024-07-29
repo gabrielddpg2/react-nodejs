@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../services/api';  
-import { Container, Header, WorkTime, Button, History } from './styles';
+import api from '../../services/api';
+import { HourContainer, Container, Header, WorkTime, Button, History } from './styles';
 
 interface IWorkTime {
   hours: string;
@@ -20,53 +20,67 @@ const Pontos: React.FC = () => {
   const [history, setHistory] = useState<IHistoryItem[]>([]);
   const userCode = localStorage.getItem('session');
 
-  useEffect(() => {
+  const fetchWorkTime = async () => {
     if (userCode) {
-      api.get(`/points/today/${userCode}`).then(response => {
-        setWorkTime(response.data);
-      });
-
-      api.get(`/points/history/${userCode}`).then(response => {
-        setHistory(response.data);
-      });
+      const response = await api.get(`/points/today/${userCode}`);
+      setWorkTime(response.data);
     }
+  };
+
+  const fetchHistory = async () => {
+    if (userCode) {
+      const response = await api.get(`/points/history/${userCode}`);
+      setHistory(response.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkTime();
+    fetchHistory();
   }, [userCode]);
 
-  const handleExit = async () => {
+  const handleButtonClick = async () => {
     if (userCode) {
       try {
         await api.post('/points', { user_code: userCode });
-        // Refresh the data
-        const response = await api.get(`/points/today/${userCode}`);
-        setWorkTime(response.data);
+        await fetchWorkTime();
+        await fetchHistory();
       } catch (error) {
-        console.error('Erro ao registrar a hora de saída:', error);
+        console.error('Erro ao registrar a hora:', error);
       }
     }
   };
 
   return (
     <Container>
-      <Header>
-        <div>
-          <h1>Relógio de ponto</h1>
-          <span>{userCode}</span>
-        </div>
-        <Button onClick={handleExit}>Hora de saída</Button>
-      </Header>
-      <WorkTime>
-        <h2>{workTime ? `${workTime.hours}h ${workTime.minutes}m` : '0h 0m'}</h2>
-        <p>Horas de hoje</p>
-      </WorkTime>
-      <History>
-        <h3>Dias anteriores</h3>
-        {history.map(item => (
-          <div key={item.id}>
-            <span>{item.date}</span>
-            <span>{item.hours}h {item.minutes}m</span>
+      <HourContainer>
+        <Header>
+          <div className='headerMain'>
+            <h1>Relógio de ponto</h1>
+            <div>
+              <div className='userCode'>#{userCode}</div>
+              <div>Usuário</div>
+            </div>
           </div>
-        ))}
-      </History>
+
+        </Header>
+        <WorkTime>
+          <h2>{workTime ? `${workTime.hours}h ${workTime.minutes}m` : '0h 0m'}</h2>
+          <p>Horas de hoje</p>
+        </WorkTime>
+        <Button onClick={handleButtonClick}>
+          {workTime?.trabalhando ? 'Hora de entrada' : 'Hora de saída'}
+        </Button>
+        <History>
+          <h3>Dias anteriores</h3>
+          {history.map(item => (
+            <div key={item.id}>
+              <span>{item.date}</span>
+              <span>{item.hours}h {item.minutes}m</span>
+            </div>
+          ))}
+        </History>
+      </HourContainer>
     </Container>
   );
 };

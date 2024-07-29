@@ -1,14 +1,23 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+width: 100%;
+  background: #151F2B;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  
+  
+`;
+export const HourContainer = styled.div`
+  width: 365px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  background-color: #1c1c1c;
+  background-color: #151F2B;
   height: 100vh;
-  color: #fff;
+  margin-top: 10rem;
 `;
 
 export const Header = styled.div`
@@ -18,9 +27,9 @@ export const Header = styled.div`
   align-items: center;
   margin-bottom: 20px;
 
-  div {
+  .headerMain {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
 
     h1 {
       margin: 0;
@@ -28,13 +37,15 @@ export const Header = styled.div`
       font-size: 21.52px;
       font-weight: 400;
       line-height: 26.23px;
+      color:#FFFFFF;
     }
 
-    span {
+    .userCode {
       font-family: Montserrat;
       font-size: 14px;
       font-weight: 300;
       line-height: 17.07px;
+      color:#FFFFFF;
     }
   }
 `;
@@ -49,6 +60,7 @@ export const WorkTime = styled.div`
     margin: 0;
     font-size: 48px;
     font-weight: 700;
+    color:#FFFFFF;
   }
 
   p {
@@ -56,6 +68,7 @@ export const WorkTime = styled.div`
     font-size: 14px;
     font-weight: 300;
     line-height: 17.07px;
+    color:#FFFFFF;
   }
 `;
 
@@ -64,9 +77,17 @@ export const Button = styled.button`
   border: none;
   border-radius: 4px;
   background-color: #ff8c00;
-  color: #fff;
-  font-size: 16px;
+  color: #1E2733;
+  font-weight: bold;
+  font-family: Montserrat;
+font-size: 16px;
+font-weight: 700;
+line-height: 19.5px;
+text-align: center;
+
   cursor: pointer;
+  width: 100%;
+  height: 47px;
 
   &:hover {
     opacity: 0.8;
@@ -83,6 +104,8 @@ export const History = styled.div`
     margin: 0 0 20px 0;
     font-size: 18px;
     font-weight: 400;
+    color:#FFFFFF;
+    width:100%;
   }
 
   div {
