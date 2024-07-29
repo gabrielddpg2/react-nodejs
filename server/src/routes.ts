@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { DoctorsController } from './controllers/DoctorsController';
-import { PointController } from './controllers/pointController';
+import { PointController } from './controllers/PointController';
 
 const routes = Router();
 
@@ -18,6 +18,7 @@ routes.post('/points', pointController.registerPoint);
 routes.get('/points/history/:user_code', pointController.getPointsHistory);
 routes.get('/points/today/:user_code', pointController.getTodayHours);
 routes.get('/users', pointController.getAllUsers);
+routes.get('/users/exists/:user_code', pointController.checkUserExists); // Nova rota
 
 routes.get("/teste", (req, res) => {
     return res.json("testando servidor");

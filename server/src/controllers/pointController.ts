@@ -113,4 +113,18 @@ export class PointController {
             return response.status(500).json({ status: 'error', message: 'Internal server error' });
         }
     }
+
+    async checkUserExists(request: Request, response: Response): Promise<Response> {
+        try {
+            const { user_code } = request.params;
+            const userRepository = getRepository(User);
+
+            const user = await userRepository.findOne({ code: user_code });
+
+            return response.json({ exists: !!user });
+        } catch (error) {
+            console.error('Error checking user existence:', error);
+            return response.status(500).json({ status: 'error', message: 'Internal server error' });
+        }
+    }
 }
