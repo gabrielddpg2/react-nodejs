@@ -161,4 +161,37 @@ export class PointController {
             return response.status(500).json({ status: 'error', message: 'Internal server error' });
         }
     }
+
+    async getPaginatedHistory(request: Request, response: Response): Promise<Response> {
+        try {
+            const { user_code } = request.params;
+            const { page = 1, per_page = 10 } = request.query;
+
+            const pointsHistoryRepository = getRepository(PointsHistory);
+
+            const [result, total] = await pointsHistoryRepository.findAndCount({
+                where: { user_code },
+                order: { date: 'DESC' },
+                skip: (Number(page) - 1) * Number(per_page),
+                take: Number(per_page)
+            });
+
+            const formattedHistory = result.map(entry => ({
+                ...entry,
+                date: new Date(entry.date).toLocaleDateString('pt-BR'),
+                time: `${String(entry.hours).padStart(2, '0')}:${String(entry.minutes).padStart(2, '0')}`
+            }));
+
+            return response.json({
+                data: formattedHistory,
+                total,
+                page: Number(page),
+                per_page: Number(per_page),
+                total_pages: Math.ceil(total / Number(per_page))
+            });
+        } catch (error) {
+            console.error('Error getting paginated points history:', error);
+            return response.status(500).json({ status: 'error', message: 'Internal server error' });
+        }
+    }
 }

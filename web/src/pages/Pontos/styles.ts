@@ -6,6 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 2rem;
   
   
 `;
@@ -17,7 +18,7 @@ export const HourContainer = styled.div`
   padding: 20px;
   background-color: #151F2B;
   height: 100vh;
-  margin-top: 10rem;
+  margin: 2rem 0;
 `;
 
 export const Header = styled.div`
@@ -160,4 +161,26 @@ export const History = styled.div`
     text-align: center;
 
   }
+`;
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: #ff8c00;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+`;
+
+export const Select = styled.select`
+  margin-right: 10px;
+  background: #ff8c00;
 `;

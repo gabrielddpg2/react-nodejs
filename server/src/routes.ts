@@ -19,7 +19,7 @@ routes.get('/points/history/:user_code', pointController.getPointsHistory);
 routes.get('/points/today/:user_code', pointController.getTodayHours);
 routes.get('/users', pointController.getAllUsers);
 routes.get('/users/exists/:user_code', pointController.checkUserExists);
-routes.get('/bancodehoras', pointController.calculateBankHours); // Nova rota
+routes.get('/points/history/:user_code/paginated', pointController.getPaginatedHistory); // Nova rota
 
 routes.get("/teste", (req, res) => {
     return res.json("testando servidor");

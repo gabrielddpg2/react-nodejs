@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import api from '../../services/api';
-import { HourContainer, Container, Header, WorkTime, Button, History } from './styles';
+import { HourContainer, Container, Header, WorkTime, Button, History, Pagination, Select } from './styles';
 
 interface IWorkTime {
   hours: string;
@@ -19,17 +19,20 @@ interface IHistoryItem {
 const Pontos: React.FC = () => {
   const [workTime, setWorkTime] = useState<IWorkTime | null>(null);
   const [historyItems, setHistoryItems] = useState<IHistoryItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const userCode = localStorage.getItem('session');
   const history = useHistory();
 
   useEffect(() => {
     if (!userCode) {
-      // history.push('/');
+      history.push('/');
     } else {
       fetchWorkTime();
-      fetchHistory();
+      fetchHistory(page, itemsPerPage);
     }
-  }, [userCode, history]);
+  }, [userCode, history, page, itemsPerPage]);
 
   const fetchWorkTime = async () => {
     if (userCode) {
@@ -38,10 +41,13 @@ const Pontos: React.FC = () => {
     }
   };
 
-  const fetchHistory = async () => {
+  const fetchHistory = async (page: number, perPage: number) => {
     if (userCode) {
-      const response = await api.get(`/points/history/${userCode}`);
-      setHistoryItems(response.data);
+      const response = await api.get(`/points/history/${userCode}/paginated`, {
+        params: { page, per_page: perPage }
+      });
+      setHistoryItems(response.data.data);
+      setTotalPages(response.data.total_pages);
     }
   };
 
@@ -50,11 +56,20 @@ const Pontos: React.FC = () => {
       try {
         await api.post('/points', { user_code: userCode });
         await fetchWorkTime();
-        await fetchHistory();
+        await fetchHistory(page, itemsPerPage);
       } catch (error) {
         console.error('Erro ao registrar a hora:', error);
       }
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setPage(1); 
   };
 
   return (
@@ -85,6 +100,23 @@ const Pontos: React.FC = () => {
             </div>
           ))}
         </History>
+        <Pagination>
+          <Select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </Select>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map(pageNumber => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              disabled={pageNumber === page}
+            >
+              {pageNumber}
+            </button>
+          ))}
+        </Pagination>
       </HourContainer>
     </Container>
   );
