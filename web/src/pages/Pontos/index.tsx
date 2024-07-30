@@ -24,7 +24,7 @@ const Pontos: React.FC = () => {
 
   useEffect(() => {
     if (!userCode) {
-      history.push('/');
+      // history.push('/');
     } else {
       fetchWorkTime();
       fetchHistory();

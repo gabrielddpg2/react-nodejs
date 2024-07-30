@@ -22,10 +22,11 @@ export class PointController {
 
     async registerPoint(request: Request, response: Response): Promise<Response> {
         try {
-            const { user_code, timestamp } = request.body;
+            const { user_code, timestamp } = request.body; // Adicionado timestamp
 
             const dailyPoints = await registerPoint({ user_code, timestamp });
 
+            // Calculando e formatando hours_today
             const totalMinutes = dailyPoints.hours_today;
             const hours = Math.floor(totalMinutes / 60);
             const minutes = Math.floor(totalMinutes % 60);
@@ -49,7 +50,7 @@ export class PointController {
 
             const history = await pointsHistoryRepository.find({
                 where: { user_code },
-                order: { date: 'DESC' }, 
+                order: { date: 'DESC' }, // Ordenando da data mais recente para a mais antiga
             });
 
             const formattedHistory = history.map(entry => ({
@@ -123,6 +124,40 @@ export class PointController {
             return response.json({ exists: !!user });
         } catch (error) {
             console.error('Error checking user existence:', error);
+            return response.status(500).json({ status: 'error', message: 'Internal server error' });
+        }
+    }
+
+    async calculateBankHours(request: Request, response: Response): Promise<Response> {
+        try {
+            const { user_code, daily_hours } = request.query;
+            const pointsHistoryRepository = getRepository(PointsHistory);
+
+            const history = await pointsHistoryRepository.find({
+                where: { user_code },
+                order: { date: 'ASC' },
+            });
+
+            const [dailyHours, dailyMinutes] = daily_hours.split(':').map(Number);
+            const totalDailyMinutes = dailyHours * 60 + dailyMinutes;
+
+            let totalWorkedMinutes = 0;
+            history.forEach(entry => {
+                totalWorkedMinutes += entry.hours * 60 + entry.minutes;
+            });
+
+            const totalExpectedMinutes = totalDailyMinutes * history.length;
+            const balanceMinutes = totalWorkedMinutes - totalExpectedMinutes;
+
+            const balanceHours = Math.floor(Math.abs(balanceMinutes) / 60);
+            const balanceRemainingMinutes = Math.abs(balanceMinutes) % 60;
+            const balanceSign = balanceMinutes < 0 ? '-' : '';
+
+            const formattedBalance = `${balanceSign}${String(balanceHours).padStart(2, '0')}:${String(balanceRemainingMinutes).padStart(2, '0')}`;
+
+            return response.json({ balance: formattedBalance });
+        } catch (error) {
+            console.error('Error calculating bank hours:', error);
             return response.status(500).json({ status: 'error', message: 'Internal server error' });
         }
     }
