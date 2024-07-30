@@ -13,10 +13,10 @@ class DailyPoints {
     @Column({ default: false })
     working: boolean;
 
-    @Column('float', { default: 0 }) // Alterado para 'float'
+    @Column('float', { default: 0 }) 
     hours_today: number;
 
-    @Column('timestamp', { nullable: true }) // Adicionado para armazenar o horário de início
+    @Column('timestamp', { nullable: true })
     start_time: Date | null;
 }
 

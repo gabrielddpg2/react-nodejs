@@ -1,18 +1,10 @@
 
-<h1  align="center">
-Simple CRUD w/ Node.js + TypeScript + Postgres + MongoDB + ReactJS
+<h1 align="center">
+Sistema de Bater Pontos
 </h1>
-<p  align="center">
-<a  href="#"  style="text-decoration: none">
-<img  alt="GitHub top language"  src="https://img.shields.io/github/languages/top/vinisioux/simple-crud-docker?color=34CB79" />
-</a>
-<a  href="https://github.com/vinisioux/simple-crud-docker/stargazers"  style="text-decoration: none">
-<img  alt="Stars"  src="https://img.shields.io/github/stars/vinisioux/simple-crud-docker?style=social" />
-</a>
-</p>
 
 ## :rocket: Technologies
-This project is being developed using the following technologies:
+Este projeto está sendo desenvolvido utilizando as seguintes tecnologias:
 
 - [Node.js](https://nodejs.org/en/)
 - [TypeScript](https://www.typescriptlang.org/)
@@ -23,29 +15,23 @@ This project is being developed using the following technologies:
 - [ReactJS](https://reactjs.org)
 - [Styled Components](https://styled-components.com/)
 ---
-## :dart: How To Run
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) + [Yarn](https://yarnpkg.com/) and [Docker + Docker Compose](https://www.docker.com/) installed on your computer. From your command line:
+Para clonar e executar esta aplicação, você precisará de Git, Node.js + Yarn e Docker + Docker Compose instalados no seu computador. A partir do seu terminal de comando:
 
 ```bash
-# Clone this repository
-$ git clone https://github.com/vinisioux/simple-crud-docker.git
-
-# Go into the repository
-$ cd simple-crud-docker/
-
-# Go into server folder
+# Entre na pasta do servidor
 $ cd server
 
-# Start server
+# Inicie o servidor
 $ docker-compose up
 
-# On another terminal, go to the frontend folder
+# Em outro terminal, vá para a pasta do frontend
 $ cd ../frontend
 
-# Install dependencies
+# Instale as dependências
 $ yarn install
 
-# Start the frontend server
+# Inicie o servidor frontend
 $ yarn start
+
 ```
